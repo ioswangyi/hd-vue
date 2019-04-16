@@ -56,13 +56,55 @@ module.exports = {
         include: [resolve('src'), resolve('test'), resolve('node_modules/webpack-dev-server/client')]
       },
       {
-        test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
-        loader: 'url-loader',
-        options: {
-          limit: 10000,
-          name: utils.assetsPath('img/[name].[hash:7].[ext]')
-        }
-      },
+            test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
+            use: [
+                'url-loader?limit=10000&name=' +
+                    utils.assetsPath('img/[name].[hash:7].[ext]'),
+                {
+                    loader: 'image-webpack-loader',
+                    options: {
+                        mozjpeg: {
+                            progressive: true,
+                            quality: 65
+                        },
+                        // optipng.enabled: false will disable optipng
+                        optipng: {
+                            enabled: false
+                        },
+                        pngquant: {
+                            quality: '65-90',
+                            speed: 4
+                        },
+                        gifsicle: {
+                            interlaced: false
+                        }
+                    }
+                }
+            ]
+            // loader: 'url-loader',
+            // options: {
+            //     limit: 10000,
+            //     name: utils.assetsPath('img/[name].[hash:7].[ext]')
+            // }
+        },
+        {
+            test: /\.less$/,
+            loader: 'style-loader!css-loader!less-loader'
+        },
+        {
+            test: /\.scss$/,
+            use: [
+                {
+                    loader: 'style-loader' // 将 JS 字符串生成为 style 节点
+                },
+                {
+                    loader: 'css-loader' // 将 CSS 转化成 CommonJS 模块
+                },
+                {
+                    loader: 'sass-loader' // 将 Sass 编译成 CSS
+                }
+            ]
+        },
       {
         test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
         loader: 'url-loader',
